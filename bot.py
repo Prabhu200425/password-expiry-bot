@@ -1,7 +1,5 @@
 import csv
 import smtplib
-import schedule
-import time
 import os
 import sqlite3
 import logging
@@ -9,19 +7,28 @@ import uuid
 from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from dotenv import load_dotenv
 
-load_dotenv()
+# ── NO dotenv needed — GitHub Secrets are injected as ENV vars ──
+# Remove: from dotenv import load_dotenv
+# Remove: load_dotenv()
 
 # ── Configuration ────────────────────────────────────────
-EMAIL_SENDER   = os.getenv("EMAIL_SENDER")
-EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+EMAIL_SENDER   = os.environ["EMAIL_SENDER"]       # GitHub Secret
+EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]     # GitHub Secret
+TRACKER_URL    = os.environ.get("TRACKER_URL", "http://localhost:5000/track")  # Optional Secret
+
 SMTP_SERVER    = "smtp.gmail.com"
 SMTP_PORT      = 587
 DAYS_WARNING   = 7
 LOG_FILE       = "bot.log"
 DB_FILE        = "password_expiry.db"
-TRACKER_URL    = os.getenv("TRACKER_URL", "http://localhost:5000/track")
+
+# ── Validate Secrets at Startup ──────────────────────────
+if not EMAIL_SENDER or not EMAIL_PASSWORD:
+    raise EnvironmentError(
+        "❌ Missing GitHub Secrets! Make sure EMAIL_SENDER and "
+        "EMAIL_PASSWORD are set in GitHub → Settings → Secrets → Actions."
+    )
 
 # ── Logging Setup ────────────────────────────────────────
 logging.basicConfig(
@@ -33,6 +40,7 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
+logger.info(f"✅ Secrets loaded — Sender: {EMAIL_SENDER}")
 
 
 # ── Database Setup ───────────────────────────────────────
@@ -41,7 +49,6 @@ def init_database():
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
 
-    # Users table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id              INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,7 +60,6 @@ def init_database():
         )
     """)
 
-    # Email logs table - tracks every email sent
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS email_logs (
             id           INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -125,11 +131,11 @@ def get_expiring_users():
 
             if 0 <= days_left <= DAYS_WARNING:
                 expiring.append({
-                    "name":       name,
-                    "email":      email,
-                    "department": department,
-                    "days_left":  days_left,
-                    "expiry":     expiry_date.strftime("%B %d, %Y"),
+                    "name":        name,
+                    "email":       email,
+                    "department":  department,
+                    "days_left":   days_left,
+                    "expiry":      expiry_date.strftime("%B %d, %Y"),
                     "tracking_id": str(uuid.uuid4())
                 })
         except Exception as e:
@@ -163,27 +169,25 @@ def send_email(user):
     """Send a professional HTML reminder email with open tracking pixel."""
     tracking_pixel = f'<img src="{TRACKER_URL}/{user["tracking_id"]}" width="1" height="1" style="display:none"/>'
 
-    # Color based on urgency
     if user["days_left"] <= 1:
-        urgency_color = "#e74c3c"   # Red — critical
+        urgency_color = "#e74c3c"
         urgency_text  = "URGENT: "
     elif user["days_left"] <= 3:
-        urgency_color = "#e67e22"   # Orange — warning
+        urgency_color = "#e67e22"
         urgency_text  = "Warning: "
     else:
-        urgency_color = "#2980b9"   # Blue — reminder
+        urgency_color = "#2980b9"
         urgency_text  = ""
 
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"⚠️ {urgency_text}Your password expires in {user['days_left']} day(s)"
-    msg["From"]    = f"IT Support <{EMAIL_SENDER}>"
-    msg["To"]      = user["email"]
+    msg["Subject"]    = f"⚠️ {urgency_text}Your password expires in {user['days_left']} day(s)"
+    msg["From"]       = f"IT Support <{EMAIL_SENDER}>"
+    msg["To"]         = user["email"]
     msg["X-Priority"] = "1" if user["days_left"] <= 1 else "3"
 
     body = f"""
     <html>
     <body style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background: #f9f9f9;">
-
         <div style="background: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
 
             <div style="border-left: 5px solid {urgency_color}; padding-left: 15px; margin-bottom: 25px;">
@@ -192,7 +196,6 @@ def send_email(user):
             </div>
 
             <p>Dear <strong>{user['name']}</strong>,</p>
-
             <p>This is an automated security notification from the IT Support Team.</p>
 
             <div style="background: #fff3cd; border: 1px solid {urgency_color}; border-radius: 6px; padding: 15px; margin: 20px 0;">
@@ -226,12 +229,10 @@ def send_email(user):
             </p>
 
             <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-
             <p style="color: #999; font-size: 12px;">
                 This is an automated message from the IT Password Management System.<br>
                 Department: {user['department']} | Notification ID: {user['tracking_id'][:8].upper()}
             </p>
-
         </div>
         {tracking_pixel}
     </body>
@@ -251,7 +252,7 @@ def send_email(user):
         logger.info(f"✅ Email sent → {user['name']} ({user['email']}) | {user['days_left']} days left")
 
     except smtplib.SMTPAuthenticationError:
-        error = "Authentication failed — check EMAIL_SENDER and EMAIL_PASSWORD in .env"
+        error = "Authentication failed — check EMAIL_SENDER and EMAIL_PASSWORD in GitHub Secrets"
         log_email(user, "FAILED", error)
         logger.error(f"❌ {error}")
 
@@ -315,7 +316,4 @@ if __name__ == "__main__":
     init_database()
     import_users_from_csv("users.csv")
     run_bot()
-    logger.info("⏰ Scheduler active — next run at 08:00 AM daily.")
-    while True:
-        schedule.run_pending()
-        time.sleep(60)
+    logger.info("✅ GitHub Actions run complete.")
