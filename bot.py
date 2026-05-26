@@ -8,26 +8,22 @@ from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-# ── NO dotenv needed — GitHub Secrets are injected as ENV vars ──
-# Remove: from dotenv import load_dotenv
-# Remove: load_dotenv()
-
 # ── Configuration ────────────────────────────────────────
-EMAIL_SENDER   = os.environ["EMAIL_SENDER"]       # GitHub Secret
-EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]     # GitHub Secret
-TRACKER_URL    = os.environ.get("TRACKER_URL", "http://localhost:5000/track")  # Optional Secret
+EMAIL_SENDER   = os.environ["EMAIL_SENDER"]
+EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
+TRACKER_URL    = os.environ.get("TRACKER_URL", "http://localhost:5000/track")
 
-SMTP_SERVER    = "smtp.gmail.com"
-SMTP_PORT      = 587
-DAYS_WARNING   = 7
-LOG_FILE       = "bot.log"
-DB_FILE        = "password_expiry.db"
+SMTP_SERVER  = "smtp.gmail.com"
+SMTP_PORT    = 587
+DAYS_WARNING = 7
+LOG_FILE     = "bot.log"
+DB_FILE      = "password_expiry.db"
 
-# ── Validate Secrets at Startup ──────────────────────────
+# ── Validate Secrets ─────────────────────────────────────
 if not EMAIL_SENDER or not EMAIL_PASSWORD:
     raise EnvironmentError(
-        "❌ Missing GitHub Secrets! Make sure EMAIL_SENDER and "
-        "EMAIL_PASSWORD are set in GitHub → Settings → Secrets → Actions."
+        "❌ Missing Secrets! Set EMAIL_SENDER and EMAIL_PASSWORD "
+        "in GitHub → Settings → Secrets → Actions."
     )
 
 # ── Logging Setup ────────────────────────────────────────
@@ -112,7 +108,7 @@ def import_users_from_csv(csv_file="users.csv"):
     logger.info(f"Imported {imported} user(s) from CSV into database.")
 
 
-# ── Fetch Expiring Users from Database ───────────────────
+# ── Fetch Expiring Users ──────────────────────────────────
 def get_expiring_users():
     """Query database for users whose passwords expire within warning period."""
     conn = sqlite3.connect(DB_FILE)
@@ -144,7 +140,7 @@ def get_expiring_users():
     return expiring
 
 
-# ── Email Tracking Logger ─────────────────────────────────
+# ── Email Logger ──────────────────────────────────────────
 def log_email(user, status, error=None):
     """Log every email attempt to the database."""
     conn = sqlite3.connect(DB_FILE)
@@ -166,7 +162,7 @@ def log_email(user, status, error=None):
 
 # ── Send Email ────────────────────────────────────────────
 def send_email(user):
-    """Send a professional HTML reminder email with open tracking pixel."""
+    """Send a professional HTML reminder email."""
     tracking_pixel = f'<img src="{TRACKER_URL}/{user["tracking_id"]}" width="1" height="1" style="display:none"/>'
 
     if user["days_left"] <= 1:
@@ -218,7 +214,8 @@ def send_email(user):
             <div style="background: #eaf4fb; border-radius: 6px; padding: 15px; margin: 20px 0;">
                 <p style="margin: 0; color: #2980b9;">
                     💡 <strong>Password Requirements:</strong>
-                    Minimum 8 characters, include uppercase, lowercase, number and special character.
+                    Minimum 8 characters, include uppercase, lowercase,
+                    number and special character.
                 </p>
             </div>
 
@@ -266,7 +263,7 @@ def send_email(user):
         logger.error(f"❌ Failed to send to {user['email']}: {e}")
 
 
-# ── Generate Daily Report ─────────────────────────────────
+# ── Daily Report ──────────────────────────────────────────
 def generate_report():
     """Print a summary report of today's email activity."""
     conn = sqlite3.connect(DB_FILE)
@@ -289,7 +286,7 @@ def generate_report():
     logger.info("=" * 50)
 
 
-# ── Main Bot Runner ───────────────────────────────────────
+# ── Main ──────────────────────────────────────────────────
 def run_bot():
     logger.info("=" * 50)
     logger.info(f"🔍 Bot started at {datetime.now().strftime('%Y-%m-%d %H:%M')}")
@@ -307,9 +304,6 @@ def run_bot():
     logger.info("✅ Bot run complete.")
     logger.info("=" * 50)
 
-
-# ── Scheduler ─────────────────────────────────────────────
-schedule.every().day.at("08:00").do(run_bot)
 
 if __name__ == "__main__":
     logger.info("🤖 Password Expiry Bot initializing...")
