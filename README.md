@@ -26,7 +26,13 @@ automatically warning users 7 days in advance.
 - CSV — User data management
 
 ## 📸 Screenshots
-(Add your terminal screenshot and email screenshot here)
+## 📸 Screenshots
+
+### ✅ Bot Running — Terminal Output
+![Terminal Output](screenshots/terminal.png)
+
+### 📧 Email Received by User
+![Email Screenshot](screenshots/email.png)
 
 ## 🔧 How to Run
 1. Clone the repo
