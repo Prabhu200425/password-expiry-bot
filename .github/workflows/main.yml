@@ -8,9 +8,7 @@ on:
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-    env:
-      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,6 +21,18 @@ jobs:
       - name: Install dependencies
         run: |
           pip install python-dotenv
+
+      - name: Validate secrets configured
+        run: |
+          if [ -z "$EMAIL_SENDER" ] || [ -z "$EMAIL_PASSWORD" ]; then
+            echo "❌ ERROR: EMAIL_SENDER or EMAIL_PASSWORD secret not configured"
+            echo "Please add both secrets in Settings → Secrets and variables → Actions"
+            exit 1
+          fi
+          echo "✅ All secrets are properly configured"
+        env:
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
       - name: Run Password Expiry Bot
         env:
