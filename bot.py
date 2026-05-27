@@ -9,8 +9,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # ── Configuration ────────────────────────────────────────
-EMAIL_SENDER   = os.environ["EMAIL_SENDER"]
-EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
+EMAIL_SENDER   = os.environ.get("EMAIL_SENDER", "")
+EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD", "")
 TRACKER_URL    = os.environ.get("TRACKER_URL", "http://localhost:5000/track")
 
 SMTP_SERVER  = "smtp.gmail.com"
@@ -21,10 +21,8 @@ DB_FILE      = "password_expiry.db"
 
 # ── Validate Secrets ─────────────────────────────────────
 if not EMAIL_SENDER or not EMAIL_PASSWORD:
-    raise EnvironmentError(
-        "❌ Missing Secrets! Set EMAIL_SENDER and EMAIL_PASSWORD "
-        "in GitHub → Settings → Secrets → Actions."
-    )
+    print("❌ Missing EMAIL_SENDER or EMAIL_PASSWORD environment variables!")
+    exit(1)
 
 # ── Logging Setup ────────────────────────────────────────
 logging.basicConfig(
