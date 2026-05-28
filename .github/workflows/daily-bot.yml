@@ -1,4 +1,4 @@
-name: Password Expiry Bot - Daily Run
+name: Password Expiry Bot
 
 on:
   schedule:
@@ -8,28 +8,30 @@ on:
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: |
-          pip install python-dotenv
+        run: pip install python-dotenv
 
       - name: Validate secrets configured
         run: |
-          if [ -z "$EMAIL_SENDER" ] || [ -z "$EMAIL_PASSWORD" ]; then
-            echo "❌ ERROR: EMAIL_SENDER or EMAIL_PASSWORD secret not configured"
-            echo "Please add both secrets in Settings → Secrets and variables → Actions"
+          if [ -z "$EMAIL_SENDER" ]; then
+            echo "❌ EMAIL_SENDER secret is missing!"
             exit 1
           fi
-          echo "✅ All secrets are properly configured"
+          if [ -z "$EMAIL_PASSWORD" ]; then
+            echo "❌ EMAIL_PASSWORD secret is missing!"
+            exit 1
+          fi
+          echo "✅ Secrets are configured!"
         env:
           EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
@@ -38,5 +40,4 @@ jobs:
         env:
           EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-        run: |
-          python3 bot.py
+        run: python3 bot.py

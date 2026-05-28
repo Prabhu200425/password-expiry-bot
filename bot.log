@@ -13,3 +13,55 @@
 2026-05-25 18:18:20,560 [INFO] ✅ Bot run complete.
 2026-05-25 18:18:20,560 [INFO] ==================================================
 2026-05-25 18:18:20,560 [INFO] ⏰ Scheduler active — next run at 08:00 AM daily.
+2026-05-28 11:26:06,274 [INFO] ✅ Secrets loaded — Sender: newcarriernewlife@gmail.com
+2026-05-28 11:26:06,278 [INFO] 🤖 Password Expiry Bot initializing...
+2026-05-28 11:26:06,279 [INFO] Database initialized successfully.
+2026-05-28 11:26:06,289 [INFO] Imported 2 user(s) from CSV into database.
+2026-05-28 11:26:06,290 [INFO] ==================================================
+2026-05-28 11:26:06,290 [INFO] 🔍 Bot started at 2026-05-28 11:26
+2026-05-28 11:26:06,293 [INFO] ⚠️  3 user(s) with expiring passwords found.
+2026-05-28 11:26:19,571 [ERROR] ❌ Authentication failed — check EMAIL_SENDER and EMAIL_PASSWORD in GitHub Secrets
+2026-05-28 11:26:32,525 [ERROR] ❌ Authentication failed — check EMAIL_SENDER and EMAIL_PASSWORD in GitHub Secrets
+2026-05-28 11:26:45,744 [ERROR] ❌ Authentication failed — check EMAIL_SENDER and EMAIL_PASSWORD in GitHub Secrets
+2026-05-28 11:26:45,744 [INFO] ==================================================
+2026-05-28 11:26:45,744 [INFO] 📊 DAILY REPORT — 2026-05-28
+2026-05-28 11:26:45,745 [INFO]    FAILED: 3 email(s)
+2026-05-28 11:26:45,745 [INFO] ==================================================
+2026-05-28 11:26:45,745 [INFO] ✅ Bot run complete.
+2026-05-28 11:26:45,745 [INFO] ==================================================
+2026-05-28 11:26:45,745 [INFO] ✅ GitHub Actions run complete.
+2026-05-28 11:32:43,333 [INFO] ✅ Secrets loaded — Sender: newcarriernewlife@gmail.com
+2026-05-28 11:32:43,333 [INFO] 🤖 Password Expiry Bot initializing...
+2026-05-28 11:32:43,335 [INFO] Database initialized successfully.
+2026-05-28 11:32:43,343 [INFO] Imported 2 user(s) from CSV into database.
+2026-05-28 11:32:43,344 [INFO] ==================================================
+2026-05-28 11:32:43,344 [INFO] 🔍 Bot started at 2026-05-28 11:32
+2026-05-28 11:32:43,346 [INFO] ⚠️  3 user(s) with expiring passwords found.
+2026-05-28 11:32:56,704 [ERROR] ❌ Authentication failed — check EMAIL_SENDER and EMAIL_PASSWORD in GitHub Secrets
+2026-05-28 11:33:09,864 [ERROR] ❌ Authentication failed — check EMAIL_SENDER and EMAIL_PASSWORD in GitHub Secrets
+2026-05-28 11:33:23,220 [ERROR] ❌ Authentication failed — check EMAIL_SENDER and EMAIL_PASSWORD in GitHub Secrets
+2026-05-28 11:33:23,221 [INFO] ==================================================
+2026-05-28 11:33:23,221 [INFO] 📊 DAILY REPORT — 2026-05-28
+2026-05-28 11:33:23,221 [INFO]    FAILED: 6 email(s)
+2026-05-28 11:33:23,221 [INFO] ==================================================
+2026-05-28 11:33:23,221 [INFO] ✅ Bot run complete.
+2026-05-28 11:33:23,221 [INFO] ==================================================
+2026-05-28 11:33:23,221 [INFO] ✅ GitHub Actions run complete.
+2026-05-28 11:34:56,806 [INFO] ✅ Secrets loaded — Sender: newcarriernewlife@gmail.com
+2026-05-28 11:34:56,806 [INFO] 🤖 Password Expiry Bot initializing...
+2026-05-28 11:34:56,808 [INFO] Database initialized successfully.
+2026-05-28 11:34:56,825 [INFO] Imported 2 user(s) from CSV into database.
+2026-05-28 11:34:56,825 [INFO] ==================================================
+2026-05-28 11:34:56,826 [INFO] 🔍 Bot started at 2026-05-28 11:34
+2026-05-28 11:34:56,828 [INFO] ⚠️  3 user(s) with expiring passwords found.
+2026-05-28 11:35:11,312 [INFO] ✅ Email sent → Ravi Kumar (ravi@gmail.com) | 2 days left
+2026-05-28 11:35:25,958 [INFO] ✅ Email sent → Prabhu R (prabhu200425@gmail.com) | 1 days left
+2026-05-28 11:35:40,652 [INFO] ✅ Email sent → Test User (newcarriernewlife@gmail.com) | 2 days left
+2026-05-28 11:35:40,653 [INFO] ==================================================
+2026-05-28 11:35:40,653 [INFO] 📊 DAILY REPORT — 2026-05-28
+2026-05-28 11:35:40,653 [INFO]    FAILED: 6 email(s)
+2026-05-28 11:35:40,653 [INFO]    SUCCESS: 3 email(s)
+2026-05-28 11:35:40,653 [INFO] ==================================================
+2026-05-28 11:35:40,653 [INFO] ✅ Bot run complete.
+2026-05-28 11:35:40,653 [INFO] ==================================================
+2026-05-28 11:35:40,653 [INFO] ✅ GitHub Actions run complete.
