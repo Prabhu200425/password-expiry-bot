@@ -40,4 +40,7 @@ jobs:
         env:
           EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-        run: python3 bot.py
+        run: |
+          echo "Sender length: ${#EMAIL_SENDER}"
+          echo "Password length: ${#EMAIL_PASSWORD}"
+          python3 bot.py
